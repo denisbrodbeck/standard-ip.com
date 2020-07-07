@@ -1,0 +1,16 @@
+{
+{% if acme_staging %}
+  acme_ca "https://acme-staging-v02.api.letsencrypt.org/directory"
+{% endif %}
+  email "{{acme_email}}"
+  admin off
+}
+
+{{app_domain}}:443
+
+reverse_proxy localhost:{{ app_port }} {
+  flush_interval -1
+}
+
+# Refer to the Caddy docs for more information:
+# https://caddyserver.com/docs/caddyfile

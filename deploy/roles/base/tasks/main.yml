@@ -1,0 +1,32 @@
+---
+- name: Import user `deploy` create task
+  import_tasks: user.yml
+
+- name: Ensure all packages are updated to the latest version.
+  dnf:
+    name: "*"
+    state: latest
+    update_cache: yes
+
+- name: Ensure primary packages are installed and up to date.
+  dnf:
+    name:
+      - nano
+      - chrony
+      - policycoreutils-python-utils
+      - firewalld
+    state: latest
+
+- name: Ensure firewalld is started and enabled on boot.
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Import chrony task
+  import_tasks: chrony.yml
+
+- name: Ensure selinux is enabled and enforcing targeted policies.
+  selinux:
+    state: enforcing
+    policy: targeted

@@ -1,0 +1,31 @@
+---
+# This playbook deploys the whole application stack in this site.
+- name: setup app
+  hosts: prod
+  become: yes
+  vars:
+    ssh_port: 45333
+    ssh_allowed_users: deploy
+    app_name: standardip
+    app_user: standardip
+    app_args: ""
+    app_port: 8080
+    app_doc: https://github.com/ansible/ansible
+    app_install_dir: /var/lib/standardip
+    app_domain: api.standard-ip.com
+    acme_email: go.github@darker.red
+    acme_staging: true
+    ssh_regenerate_moduli: false
+  tasks:
+    - include_role:
+        name: shared
+        public: yes # This option dictates whether the role's vars and defaults are exposed to the playbook.
+    - include_role:
+        name: base
+      when: os_centos8
+    - include_role:
+        name: ssh
+      when: os_centos8
+    - include_role:
+        name: app
+      when: os_centos8

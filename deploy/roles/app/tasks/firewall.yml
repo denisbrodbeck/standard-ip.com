@@ -1,0 +1,24 @@
+---
+- name: Check firewalld allows http
+  command: firewall-cmd --zone=public --query-service=http
+  register: firewalld_query_http
+  ignore_errors: true
+  changed_when: false
+
+- name: Ensure firewalld allows http
+  command: /usr/bin/firewall-cmd --zone=public --add-service=http --permanent
+  when: firewalld_query_http.rc == 1
+
+- name: Check firewalld allows https
+  command: firewall-cmd --zone=public --query-service=https
+  register: firewalld_query_https
+  ignore_errors: true
+  changed_when: false
+
+- name: Ensure firewalld allows https
+  command: /usr/bin/firewall-cmd --zone=public --add-service=https --permanent
+  when: firewalld_query_https.rc == 1
+
+- name: Ensure firewalld reloads without dropping established connections
+  command: /usr/bin/firewall-cmd --reload
+  when: firewalld_query_http.rc == 1 or firewalld_query_https.rc == 1

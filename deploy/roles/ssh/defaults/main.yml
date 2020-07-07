@@ -1,0 +1,4 @@
+---
+ssh_port: 22
+ssh_allowed_users: root
+ssh_regenerate_moduli: true

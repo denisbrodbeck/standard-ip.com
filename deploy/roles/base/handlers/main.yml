@@ -1,0 +1,6 @@
+---
+- name: reload chrony
+  service:
+    name: chronyd
+    state: reloaded
+    enabled: yes

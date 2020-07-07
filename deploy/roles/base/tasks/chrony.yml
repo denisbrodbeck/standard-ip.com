@@ -1,0 +1,21 @@
+---
+- name: Ensure `chrony` is installed and up to date.
+  dnf:
+    name: chrony
+    state: latest
+
+- name: Ensure `chrony` uses correct config.
+  template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload chrony
+
+- name: Ensure `chrony` is started and enabled on boot.
+  service:
+    name: chronyd
+    state: started
+    enabled: yes

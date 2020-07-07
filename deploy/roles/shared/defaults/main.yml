@@ -1,0 +1,4 @@
+---
+os_centos8: (ansible_facts['distribution']|lower == "centos") and (ansible_facts['distribution_major_version'] == "8") | bool
+#os_centos_recent: (ansible_facts['distribution']|lower == "centos") and (ansible_facts['distribution_major_version'] >= "8")
+os_distribution: "{{ ansible_facts['distribution']|lower }}"

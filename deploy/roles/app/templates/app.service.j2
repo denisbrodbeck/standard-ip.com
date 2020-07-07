@@ -1,0 +1,49 @@
+# {{ app_name }}.service
+#
+# Based on https://github.com/caddyserver/dist/blob/86c879d97c0e8cae1b30ba69f19aad256d95388b/archlinux/caddy.service
+# Extended for even more security
+[Unit]
+Description={{ app_name }} App Server
+Documentation={{ app_doc }}
+After=network.target
+
+[Service]
+# Auto-restart on failure and wait 5 seconds between attempts
+Restart=on-failure
+RestartSec=5
+# User and group the process will run as.
+User={{ app_user }}
+Group={{ app_user }}
+
+ExecStart={{ app_install_dir }}/{{ app_name }} {{ app_args }}
+WorkingDirectory=~
+# Use graceful shutdown/restart with a reasonable timeout
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=5s
+LimitNOFILE=1048576
+LimitNPROC=512
+
+# Hardening options
+# see https://www.freedesktop.org/software/systemd/man/systemd.exec.html#Sandboxing
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/{{ app_user }}
+# IF you want to bind to ports below 1024, you need CAP_NET_BIND_SERVICE
+# AmbientCapabilities=CAP_NET_BIND_SERVICE
+# CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=
+CapabilityBoundingSet=
+NoNewPrivileges=true
+ProtectClock=true
+ProtectKernelLogs=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

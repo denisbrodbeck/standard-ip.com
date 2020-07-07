@@ -1,0 +1,15 @@
+---
+- name: Setup firewall
+  import_tasks: firewall.yml
+
+- name: Setup `caddy` and its service
+  import_tasks: caddy.yml
+
+- name: Setup `app` and its service
+  import_tasks: app.yml
+
+- name: Ensure `app` is started and enabled on boot.
+  service:
+    name: "{{ app_name }}"
+    state: started
+    enabled: yes

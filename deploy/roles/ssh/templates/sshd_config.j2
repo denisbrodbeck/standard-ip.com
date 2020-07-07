@@ -1,0 +1,18 @@
+# based on modern config from https://infosec.mozilla.org/guidelines/openssh.html
+# minus the part about Ciphers, MACs and KexAlgoritms because that is managed by the
+# System-wide Crypto policy
+Port {{ ssh_port }}
+HostKey /etc/ssh/ssh_host_ed25519_key
+SyslogFacility AUTHPRIV
+LogLevel VERBOSE
+UsePAM yes
+ChallengeResponseAuthentication no
+AuthenticationMethods publickey
+AuthorizedKeysFile .ssh/authorized_keys
+AllowUsers {{ ssh_allowed_users }}
+Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO
+PermitRootLogin No
+PrintMotd no
+TCPKeepAlive yes
+PermitUserEnvironment no
+AcceptEnv XMODIFIERS LANG LANGUAGE LC_*

@@ -1,0 +1,24 @@
+---
+- name: Generating moduli.all -- this takes a long time
+  command: /usr/bin/ssh-keygen -G /etc/ssh/moduli.all -b 2048
+
+- name: Test moduli.all -- this takes some time
+  command: /usr/bin/ssh-keygen -T /etc/ssh/moduli.safe -f /etc/ssh/moduli.all
+
+- name: Replace previous moduli with new version
+  command: /bin/mv /etc/ssh/moduli.safe /etc/ssh/moduli
+  set_fact:
+    ssh_regenerate_moduli: false
+    cacheable: true
+
+- name: Clean up
+  file:
+    path: /etc/ssh/moduli.all
+    state: absent
+  notify:
+    - reload sshd
+
+#- name: Register host fact that ssh moduli was regenerated
+#  set_fact:
+#    ssh_regenerate_moduli: false
+#    cacheable: true

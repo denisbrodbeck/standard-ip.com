@@ -1,0 +1,32 @@
+---
+- name: Update package `dnf-command(copr)` to latest version
+  dnf:
+    name: "dnf-command(copr)"
+    state: latest
+
+- name: Enable CentOS Copr for caddy
+  command:
+    cmd: dnf copr enable -y @caddy/caddy
+    creates: /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:group_caddy:caddy.repo
+    warn: false
+
+- name: Update package `caddy` to latest version
+  dnf:
+    name: caddy
+    state: latest
+
+- name: Ensure config file for `caddy` exists
+  template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart app
+
+- name: Ensure `caddy` is started and enabled on boot.
+  service:
+    name: caddy
+    state: started
+    enabled: true

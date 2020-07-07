@@ -1,0 +1,45 @@
+---
+- name: Ensure app install directory exists
+  file:
+    path: "{{ app_install_dir }}"
+    owner: root
+    group: root
+    state: directory
+    mode: 0755
+
+- name: Ensure system group for app is present
+  group:
+    name: "{{ app_user }}"
+    state: present
+    system: yes
+
+- name: Ensure system user for app is present
+  user:
+    name: "{{ app_user }}"
+    state: present
+    home: "/var/lib/{{ app_user }}"
+    #home: /nonexistent
+    create_home: no
+    group: "{{ app_user }}"
+    shell: /usr/sbin/nologin
+    system: yes
+
+- name: Ensure app binary is available
+  copy:
+    src: "../target/release/{{ app_name }}"
+    dest: "{{ app_install_dir }}/{{ app_name }}"
+    owner: root
+    group: root
+    mode: 0755
+  notify:
+    - restart app
+
+- name: Ensure app service file for systemd exists
+  template:
+    src: app.service.j2
+    dest: /etc/systemd/system/{{ app_name }}.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart app

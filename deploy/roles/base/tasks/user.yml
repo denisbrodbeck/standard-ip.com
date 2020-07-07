@@ -1,0 +1,35 @@
+---
+- name: Ensure group for user `deploy` is present
+  group:
+    name: deploy
+    state: present
+    system: false
+
+- name: Ensure user `deploy` is present
+  user:
+    name: deploy
+    state: present
+    home: /home/deploy
+    create_home: true
+    group: deploy
+    groups: wheel
+    shell: /usr/bin/bash
+    password: "{{lookup('env','DEPLOY_USER_PASS')}}"
+    system: false
+
+- name: Ensure user `deploy` has authorized key from current user
+  authorized_key:
+    user: deploy
+    exclusive: true
+    manage_dir: true
+    state: present
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_hosting.pub') }}"
+    # TODO: make this a top-level variable
+
+- name: Ensure user `deploy` has a fine `.bashrc`
+  copy:
+    src: .bashrc
+    dest: /home/deploy/.bashrc
+    owner: deploy
+    group: deploy
+    mode: 0644

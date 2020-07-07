@@ -1,0 +1,10 @@
+---
+app_name: theapp
+app_user: theapp
+app_args: "-behind-proxy"
+app_port: 8080
+app_doc: https://github.com/ansible/ansible
+app_install_dir: /usr/local/bin
+app_domain: example.com
+acme_email: certbot@example.com
+acme_staging: true
