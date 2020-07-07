@@ -71,3 +71,5 @@ Hetzner modifies their CentOS install in (maybe unexpected) ways:
 - `selinux` is in permissive mode
 - `firewalld` is missing
 - `rsyslog` is missing
+
+The `ansible` playbook will set `selinux` to `enforce` and enable `firewalld`.
